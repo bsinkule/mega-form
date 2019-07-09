@@ -6,6 +6,7 @@ import styled from "styled-components";
 import * as Yup from "yup";
 import IconEyeShow from "../static/images/eye-show.png";
 import IconEyeHide from "../static/images/eye-hide.png";
+import CheckBox from "./hiddenCheckbox";
 
 const phoneValid = /^[^_]*$/;
 const zipCode = /^[0-9]{5}(?:-[0-9]{4})?$/;
@@ -643,15 +644,16 @@ class MegaForm extends Component {
                             ? <div className="error-message">{errors["terms"]}</div>
                             : <div className="error-message"/>
                             }
-                            <div>
-                              <input
-                                name="terms"
-                                type="checkbox"
-                                checked={field.value}
-                                onChange={field.onChange}
-                                {...field}
-                              />
-                              <label className="cb-label">
+                            <div style={{ display: "flex", alignItems: "center" }}>
+                              <label>
+                                <CheckBox
+                                  name="terms"
+                                  checked={field.value}
+                                  onChange={field.onChange}
+                                  {...field}
+                                />
+                              </label>
+                              <div className="cb-terms">
                                 &nbsp;Check the box to accept our{" "}
                                 <a
                                   className="text-terms--blue"
@@ -660,7 +662,7 @@ class MegaForm extends Component {
                                 >
                                   Privacy Policy & Terms.
                                 </a>
-                              </label>
+                              </div>
                             </div>
                           </div>
                         );
@@ -765,9 +767,10 @@ const CheckboxStyle = styled.div`
     flex-direction: column;
   }
 
-  .cb-label {
+  .cb-terms {
     font-size: 16px;
     text-align: center;
+    height: 20px;
   }
 
   .text-terms--blue {
