@@ -14,11 +14,7 @@ const email = /(?:[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]
 
 const validation = Yup.object().shape({
   megaOption: Yup.string()
-    .test(
-      "mega option",
-      "Please choose an option",
-      value => value !== "Choose an option"
-    )
+    .test("mega option", "Please choose an option", value => value !== "Choose an option")
     .required("Required"),
   purchaseDate: Yup.string()
     .matches(dateMatch, {
@@ -40,11 +36,7 @@ const validation = Yup.object().shape({
   address: Yup.string().required("Address is required"),
   city: Yup.string().required("City is required"),
   state: Yup.string()
-    .test(
-      "state",
-      "Required",
-      value => value !== "Choose a State"
-    )
+    .test("state", "Required", value => value !== "Choose a State")
     .required("Required"),
   zipCode: Yup.string()
     .matches(zipCode, { message: "Invalid zip code", excludeEmptyString: true })
@@ -55,7 +47,7 @@ const validation = Yup.object().shape({
       excludeEmptyString: true
     })
     .required("Phone number is required"),
-  gender: Yup.string().required("Please select a gender"),
+  radio: Yup.string().required("Please select a direction"),
   promoCode: Yup.string(),
   terms: Yup.bool()
     .test("terms", "You must agree to terms", value => value !== false)
@@ -98,13 +90,11 @@ class MegaForm extends Component {
 
         <Formik
           onSubmit={(values, { resetForm }) => {
-            values["gender"] = this.state.radioValue;
-            if (values["gender"] === "") {
+            values["radio"] = this.state.radioValue;
+            if (values["radio"] === "") {
               this.setState({ errorRadio: true });
               return;
             }
-            const upperCaseState = values["state"].toUpperCase();
-            values["state"] = upperCaseState;
             const removePhoneNonNumbers = values["phoneNumber"].replace(/[^\d]/g, "");
             values["phoneNumber"] = removePhoneNonNumbers;
             delete values["terms"];
@@ -499,23 +489,23 @@ class MegaForm extends Component {
                   </InputStyle>
 
                   <div className="radioField">
-                    <label className="radio-label">ARE YOU</label>
+                    <label className="radio-label">WHICH WAY</label>
                     <div>
                       <Field
-                        name="gender"
+                        name="radio"
                         render={props => {
                           const { field } = props;
                           const { touched, errors } = props.form;
-                          this.state.radioValue ? (touched["gender"] = true) : false
+                          this.state.radioValue ? (touched["radio"] = true) : false
                           // COMMENT line ABOVE AND UNCOMMENT ONE line BELOW IF YOU USE THE line 3 lines BELOW, THEN COMMENT 4th line below
-                          // this.state.radioValue ? (touched["gender"] = true, delete errors["gender"]) : false
+                          // this.state.radioValue ? (touched["radio"] = true, delete errors["radio"]) : false
                           // NEED THE BELOW IF RADIO LOGIC ISN'T BEING USED::::: 
                           // !Object.keys(props.form.errors).length && this.state.errorBool ? this.setState({ errorBool: false }) : null;
-                          Object.keys(props.form.errors).length === 1 && this.state.radioValue ? (delete errors["gender"], this.setState({ errorBool: false})) : null;
+                          Object.keys(props.form.errors).length === 1 && this.state.radioValue ? (delete errors["radio"], this.setState({ errorBool: false})) : null;
                           return (
                             <div>
                               {this.state.errorRadio ? (
-                                <div className="eMessage">{errors["gender"]}</div>
+                                <div className="eMessage">{errors["radio"]}</div>
                               ) : (
                                 <div className="eMessage" />
                               )}
@@ -531,11 +521,11 @@ class MegaForm extends Component {
                     </div>
                   </div>
 
-                  <div className="genderButtonsContainer">
+                  <div className="radioButtonsContainer">
                     <button
                       className={
-                        this.state.radioValue === "male"
-                          ? "genderSelected"
+                        this.state.radioValue === "up"
+                          ? "radioSelected"
                           : this.state.errorRadio
                           ? "error-radio"
                           : null
@@ -543,17 +533,17 @@ class MegaForm extends Component {
                       type="button"
                       onClick={() =>
                         this.setState({
-                          radioValue: "male",
+                          radioValue: "up",
                           errorRadio: false
                         })
                       }
                     >
-                      Male
+                      Up
                     </button>
                     <button
                       className={
-                        this.state.radioValue === "female"
-                          ? "genderSelected"
+                        this.state.radioValue === "down"
+                          ? "radioSelected"
                           : this.state.errorRadio
                           ? "error-radio"
                           : null
@@ -561,17 +551,17 @@ class MegaForm extends Component {
                       type="button"
                       onClick={() =>
                         this.setState({
-                          radioValue: "female",
+                          radioValue: "down",
                           errorRadio: false
                         })
                       }
                     >
-                      Female
+                      Down
                     </button>
                     <button
                       className={
-                        this.state.radioValue === "other"
-                          ? "genderSelected"
+                        this.state.radioValue === "around"
+                          ? "radioSelected"
                           : this.state.errorRadio
                           ? "error-radio"
                           : null
@@ -579,12 +569,12 @@ class MegaForm extends Component {
                       type="button"
                       onClick={() =>
                         this.setState({
-                          radioValue: "other",
+                          radioValue: "around",
                           errorRadio: false
                         })
                       }
                     >
-                      Other
+                      Around
                     </button>
                   </div>
 
@@ -593,14 +583,7 @@ class MegaForm extends Component {
                       PROMO CODE
                       {/* BELOW: STUBBED IN FOR MESSAGE PLACEMENT */}
                       {this.state.promoSuccess 
-                      ? <span
-                        style={{
-                          color: "green",
-                          fontStyle: "italic",
-                          fontSize: "12px",
-                          marginLeft: "10px"
-                        }}
-                      >
+                      ? <span className="promo-success-text">
                         Applied Successfully!
                       </span>
                       : null}
@@ -656,11 +639,10 @@ class MegaForm extends Component {
                         const { errors, touched } = props.form;
                         return (
                           <div className="center-check">
-                            {touched["terms"] ? (
-                              <div className="error-message">
-                                {errors["terms"]}
-                              </div>
-                            ) : null}
+                            {touched["terms"] 
+                            ? <div className="error-message">{errors["terms"]}</div>
+                            : <div className="error-message"/>
+                            }
                             <div>
                               <input
                                 name="terms"
@@ -758,7 +740,7 @@ const SelectStyle = styled.div`
     background-color: rgb(37, 39, 39);
     border: solid 1px #ffffff;
     font-size: 1.3em;
-    color: white;
+    color: #fff;
     margin-top: 3px;
   }
 
@@ -781,7 +763,6 @@ const CheckboxStyle = styled.div`
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    padding: 10px 0px;
   }
 
   .cb-label {
@@ -795,9 +776,10 @@ const CheckboxStyle = styled.div`
   }
 
   .error-message {
-    padding: 2px;
+    padding-bottom: 2px;
     color: red;
     text-align: center;
+    height: 14px;
   }
 `;
 
@@ -888,9 +870,16 @@ const InputStyle = styled.div`
   .toggle-password {
     position: absolute;
     right: 0;
-    top: 37px;
+    top: 34px;
     width: 30px;
     height: 20px;
+  }
+
+  .promo-success-text {
+    color: rgb(0, 255, 0);
+    font-style: italic;
+    font-size: 12px;
+    margin-left: 10px;
   }
 `;
 
@@ -911,6 +900,7 @@ const MainWrapper = styled.div`
   .text-title {
     font-size: 30px;
     text-align: center;
+    color: rgb(255, 0, 255)
   }
 
   .text-instruction {
@@ -921,10 +911,10 @@ const MainWrapper = styled.div`
   }
 
   .success {
-    background-color: green;
-    color: white;
+    background-color: rgb(0, 255, 0);
+    color: black;
     padding: 15px;
-    margin: 10px auto;
+    margin: 20px auto 0px auto;
     border-radius: 10px;
     text-align: center;
   }
@@ -933,7 +923,7 @@ const MainWrapper = styled.div`
     border: 2px solid red;
     background-color: #fde6e6;
     padding: 15px;
-    margin: 10px auto;
+    margin: 20px auto 0px auto;
     color: red;
     border-radius: 10px;
     font-weight: 600;
@@ -969,7 +959,7 @@ const MainWrapper = styled.div`
     opacity: 0.7;
   }
 
-  .genderButtonsContainer {
+  .radioButtonsContainer {
     display: flex;
     justify-content: space-between;
     width: 100%;
@@ -986,7 +976,7 @@ const MainWrapper = styled.div`
       cursor: pointer;
     }
 
-    .genderSelected {
+    .radioSelected {
       background-color: rgba(255, 0, 255);
     }
 
