@@ -6,7 +6,7 @@ import styled from "styled-components";
 import * as Yup from "yup";
 import IconEyeShow from "../static/images/eye-show.png";
 import IconEyeHide from "../static/images/eye-hide.png";
-import CheckBox from "./HiddenCheckbox";
+import CheckBox from "./hiddenCheckbox";
 
 const phoneValid = /^[^_]*$/;
 const zipCode = /^[0-9]{5}(?:-[0-9]{4})?$/;
