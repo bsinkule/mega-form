@@ -21,8 +21,7 @@ const validation = Yup.object().shape({
     .matches(dateMatch, {
       message: "Please enter a valid date",
       excludeEmptyString: true
-    })
-    .required("Purchase date is required"),
+    }),
   comments: Yup.string(),
   email: Yup.string()
     .matches(email, {
@@ -64,6 +63,9 @@ class MegaForm extends Component {
     errorRadio: false,
     radioValue: "",
     promoSuccess: false,
+    isStateVisible: true,
+    isOptionVisible: true,
+    stateTouched: false,
   };
 
   getInitialValues(inputs) {
@@ -79,8 +81,10 @@ class MegaForm extends Component {
   render() {
     const valuesFromValidation = Object.keys(validation.fields);
     const initialValues = this.getInitialValues(valuesFromValidation);
+    const deviceCheck = (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+    const isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
     return (
-      <MainWrapper>
+      <MainWrapper deviceCheck={deviceCheck}>
         <div className="text-step">STEP 1 OF 1</div>
         <div className="text-title">MEGA FORM</div>
         <div className="text-instruction">
@@ -107,6 +111,8 @@ class MegaForm extends Component {
                 submitBool: false,
                 errorBool: false,
                 radioValue: "",
+                isStateVisible: true,
+                isOptionVisible: true,
               });
               // ROUTE TO NEXT PAGE:::::: this.props.history.push("/registration/five"), THIS AND ABOVE PRY LIVES IN POST FUNCTION;
             }, 3000);
@@ -121,7 +127,7 @@ class MegaForm extends Component {
                   onSubmit={form.handleSubmit}
                   autoComplete="on"
                 >
-                  <SelectStyle>
+                  <SelectStyle deviceCheck={deviceCheck}>
                     <label className="select-label">MEGA OPTION</label>
                     <div>
                       <Field
@@ -133,6 +139,10 @@ class MegaForm extends Component {
                             errors["megaOption"] && touched["megaOption"]
                               ? "select--error"
                               : "select--input";
+                          const redOutline =
+                            errors["megaOption"] && touched["megaOption"]
+                              ? "dd-cover-error"
+                              : "dd-cover";
                           let defaultOption = (
                             <option key="default" value="Choose an option">
                               Choose an option
@@ -161,6 +171,7 @@ class MegaForm extends Component {
                               <select value={field.value} {...field} className={hasError}>
                                 {selectOptions}
                               </select>
+                              {this.state.isOptionVisible && !field.value && (deviceCheck || isSafari) ? <div onClick={() => this.setState({ isOptionVisible: false })} className={redOutline}></div> : null}
                             </div>
                           );
                         }}
@@ -267,7 +278,7 @@ class MegaForm extends Component {
                       />
                     </div>
                   </InputStyle>
-                  <InputStyle>
+                  <InputStyle deviceCheck={deviceCheck}>
                     <label className="input-label">PASSWORD</label>
                     <div>
                       <Field
@@ -375,7 +386,7 @@ class MegaForm extends Component {
                       />
                     </div>
                   </InputStyle>
-                  <SelectStyle>
+                  <SelectStyle deviceCheck={deviceCheck}>
                     <label className="select-label">STATE</label>
                     <div>
                       <Field
@@ -387,9 +398,13 @@ class MegaForm extends Component {
                             errors["state"] && touched["state"]
                               ? "select--error"
                               : "select--input";
+                          const redOutline =
+                            errors["megaOption"] && touched["megaOption"]
+                              ? "dd-cover-error"
+                              : "dd-cover";
                           let defaultOption = (
                             <option key="default" value="Choose a State">
-
+                              Choose
                             </option>
                           );
                           const optionsArray = [ 'AL', 'AK', 'AS', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FM', 'FL', 'GA', 'GU', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MH', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'MP', 'OH', 'OK', 'OR', 'PW', 'PA', 'PR', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VI', 'VA', 'WA', 'WV', 'WI', 'WY' ]
@@ -415,6 +430,7 @@ class MegaForm extends Component {
                               <select value={field.value} {...field} className={hasError}>
                                 {selectOptions}
                               </select>
+                              {this.state.isStateVisible && !field.value && (deviceCheck || isSafari) ? <div onClick={() => this.setState({ isStateVisible: false })} className={redOutline}></div> : null}
                             </div>
                           );
                         }}
@@ -641,10 +657,10 @@ class MegaForm extends Component {
                         return (
                           <div className="center-check">
                             {touched["terms"] 
-                            ? <div className="error-message">{errors["terms"]}</div>
-                            : <div className="error-message"/>
+                            ? <div className="cb-error">{errors["terms"]}</div>
+                            : <div className="cb-error"/>
                             }
-                            <div style={{ display: "flex", alignItems: "center" }}>
+                            <div className="cb-text-and-label-container">
                               <label>
                                 <CheckBox
                                   name="terms"
@@ -654,14 +670,12 @@ class MegaForm extends Component {
                                 />
                               </label>
                               <div className="cb-terms">
-                                &nbsp;Check the box to accept our{" "}
+                                &nbsp;Check the box to accept our&nbsp;
                                 <a
-                                  className="text-terms--blue"
+                                  className="text-terms--purple"
                                   href="https://www.freeprivacypolicy.com/blog/privacy-policy-url/"
                                   target="_blank"
-                                >
-                                  Privacy Policy & Terms.
-                                </a>
+                                >Privacy Policy & Terms.</a>
                               </div>
                             </div>
                           </div>
@@ -718,6 +732,18 @@ const SelectStyle = styled.div`
   width: 100%;
   padding: 0px 0px 30px 10px;
   color: white;
+  select:-webkit-autofill,
+  select:-webkit-autofill:hover,
+  select:-webkit-autofill:focus,
+  select:-webkit-autofill:active {
+      transition: background-color 5000s ease-in-out 0s !important;
+      -webkit-text-fill-color: #fff !important;
+  }
+
+  select:-webkit-autofill {
+    -webkit-animation-name: autofill;
+    -webkit-animation-fill-mode: both;
+  }
 
   .select-label {
     display: inline-block;
@@ -739,8 +765,9 @@ const SelectStyle = styled.div`
   .select--input {
     width: 100%;
     height: 55px;
-    background-color: rgb(37, 39, 39);
     border: solid 1px #ffffff;
+    border-radius: 5px;
+    background-color: #1b1c1c !important;
     font-size: 1.3em;
     color: #fff;
     margin-top: 3px;
@@ -748,6 +775,34 @@ const SelectStyle = styled.div`
 
   .drop-down {
     position: relative;
+  }
+
+  .dd-cover {
+    width: 100%;
+    height: ${props => (props.deviceCheck ? "61px" : "53px")};
+    border: solid 1px #ffffff;
+    border-radius: 5px;
+    background-color: #1b1c1c !important;
+    font-size: 1.3em;
+    color: #fff;
+    margin-top: 17px;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .dd-cover-error {
+    width: 100%;
+    height: ${props => (props.deviceCheck ? "61px" : "53px")};
+    border: solid 1px red;
+    border-radius: 5px;
+    background-color: #1b1c1c !important;
+    font-size: 1.3em;
+    color: #fff;
+    margin-top: 17px;
+    position: absolute;
+    top: 0;
+    left: 0;
   }
 
   .text-message {
@@ -767,18 +822,22 @@ const CheckboxStyle = styled.div`
     flex-direction: column;
   }
 
-  .cb-terms {
-    font-size: 16px;
-    text-align: center;
-    height: 20px;
+  .cb-text-and-label-container {
+    display: flex;
+    align-items: center;
   }
 
-  .text-terms--blue {
+  .cb-terms {
+    font-size: 12px;
+    text-align: center;
+  }
+
+  .text-terms--purple {
     color: rgb(255, 0, 255);
     text-decoration: none;
   }
 
-  .error-message {
+  .cb-error {
     padding-bottom: 2px;
     color: red;
     text-align: center;
@@ -789,6 +848,43 @@ const CheckboxStyle = styled.div`
 const InputStyle = styled.div`
   width: 100%;
   padding: 0px 10px;
+  
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover textarea:-webkit-autofill:focus,
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+      transition: background-color 5000s ease-in-out 0s !important;
+      -webkit-text-fill-color: #fff !important;
+      -webkit-box-shadow: 0 0 0 1000px #1b1c1c inset !important;
+  }
+
+  input, select, textarea {
+    background: #1b1c1c !important;
+    color: #fff !important;
+  }
+
+  // @keyframes autofill {
+  //   100% {
+  //     background: #1b1c1c;
+  //     color: inherit;
+  //     }
+  // }
+
+  // @-webkit-keyframes autofill {
+  //   100% {
+  //     background: #1b1c1c;
+  //     color: #fff;
+  //   }
+  // }
+
+  // textarea:-webkit-autofill,
+  // input:-webkit-autofill {
+  //   -webkit-animation-name: autofill;
+  //   -webkit-animation-fill-mode: both;
+  // }
+
 
   .input-label {
     display: inline-block;
@@ -873,7 +969,7 @@ const InputStyle = styled.div`
   .toggle-password {
     position: absolute;
     right: 0;
-    top: 34px;
+    top: ${props => (props.deviceCheck ? "38px" : "34px")};
     width: 30px;
     height: 20px;
   }
@@ -926,7 +1022,7 @@ const MainWrapper = styled.div`
     border: 2px solid red;
     background-color: #fde6e6;
     padding: 15px;
-    margin: 20px auto 0px auto;
+    margin: 30px auto 0px auto;
     color: red;
     border-radius: 10px;
     font-weight: 600;
@@ -1006,14 +1102,14 @@ const MainWrapper = styled.div`
       }
 
       .promo-btn-verify {
-        border: 1px solid rgba(51, 51, 51, 0.4);
+        border: 1px solid rgba(51, 51, 51, 0.5);
         border-radius: 0px 4px 4px 0px;
-        background-color: rgba(51, 51, 51, 0.4);
-        height: 48px;
+        background-color: rgba(51, 51, 51, 0.5);
+        height: ${props => (props.deviceCheck ? "60px" : "52px")};
         width: 100px;
         color: white;
-        margin-right: -10px;
-        margin-top: 20px;
+        margin-right: ${props => (props.deviceCheck ? "-22px" : "-12px")};
+        margin-top: 18px;
         font-size: 14px;
         cursor: pointer;
         position: absolute;
