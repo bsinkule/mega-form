@@ -105,6 +105,7 @@ class MegaForm extends Component {
             const removePhoneNonNumbers = values["phoneNumber"].replace(/[^\d]/g, "");
             values["phoneNumber"] = removePhoneNonNumbers;
             delete values["terms"];
+            console.log("VALUES TO POST", values)
             // POST FUNCTION GOES HERE:::: this.postWarranty(values, event, resetForm, initialValues);
             resetForm(initialValues);
             this.setState({ loading: true, });
@@ -119,7 +120,7 @@ class MegaForm extends Component {
               });
               setTimeout(() => {
                 this.setState({ submitBool: false, })
-              }, 1500);
+              }, 2500);
               // ROUTE TO NEXT PAGE:::::: this.props.history.push("/registration/five"), THIS AND ABOVE PRY LIVES IN POST FUNCTION;
             }, 3500);
           }}
@@ -702,8 +703,9 @@ class MegaForm extends Component {
                   }
                   <div className="submit-btn-container">
                     <button 
+                      hidden={this.state.errorBool || this.state.submitBool}
                       type="submit" 
-                      className="btn-submit"
+                      className={"btn-submit"}
                       onClick={() => {
                         console.log("FORM", form);  
                         this.setState({ 
@@ -1018,24 +1020,27 @@ const MainWrapper = styled.div`
     background-color: rgb(0, 255, 0);
     color: black;
     padding: 15px;
-    margin: 20px auto 0px auto;
-    border-radius: 10px;
+    margin: 30px auto;
+    border-radius: 5px;
     text-align: center;
+    font-weight: 600;
   }
 
   .error {
     border: 2px solid red;
     background-color: #fde6e6;
     padding: 15px;
-    margin: 30px auto 0px auto;
+    margin: 30px auto;
     color: red;
-    border-radius: 10px;
+    border-radius: 5px;
     font-weight: 600;
+    width: 60%;
+    text-align: center;
   }
 
   .btn-submit {
     margin: 30px auto;
-    padding: 12px;
+    padding: 15px;
     cursor: pointer;
     min-height: 50px;
     background-color: rgb(255, 0, 255);

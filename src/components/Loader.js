@@ -39,19 +39,19 @@ const Main = styled.div`
   }
   
   .bounce3 {
-    -webkit-animation-delay: -0.16s;
+    -webkit-animation-delay: -0.01s;
     animation-delay: -0.01s;
   }
 
   @-webkit-keyframes sk-bouncedelay {
-    0%, 80%, 100% { -webkit-transform: scale(0) }
+    0%, 80%, 100% { -webkit-transform: scale(.25) }
     40% { -webkit-transform: scale(1.0) }
   }
 
   @keyframes sk-bouncedelay {
     0%, 80%, 100% { 
-      -webkit-transform: scale(0);
-      transform: scale(0);
+      -webkit-transform: scale(.25);
+      transform: scale(.25);
     } 40% { 
       -webkit-transform: scale(1.0);
       transform: scale(1.0);
