@@ -37,6 +37,11 @@ const Main = styled.div`
     -webkit-animation-delay: -0.16s;
     animation-delay: -0.16s;
   }
+  
+  .bounce3 {
+    -webkit-animation-delay: -0.16s;
+    animation-delay: -0.01s;
+  }
 
   @-webkit-keyframes sk-bouncedelay {
     0%, 80%, 100% { -webkit-transform: scale(0) }
