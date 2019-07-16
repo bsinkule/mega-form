@@ -121,7 +121,7 @@ class MegaForm extends Component {
                 this.setState({ submitBool: false, })
               }, 1500);
               // ROUTE TO NEXT PAGE:::::: this.props.history.push("/registration/five"), THIS AND ABOVE PRY LIVES IN POST FUNCTION;
-            }, 3000);
+            }, 3500);
           }}
           validationSchema={validation}
           initialValues={initialValues}
@@ -143,8 +143,8 @@ class MegaForm extends Component {
                           const { errors, touched } = props.form;
                           const hasError =
                             errors["megaOption"] && touched["megaOption"]
-                              ? "select--error"
-                              : "select--input";
+                              ? "select-error"
+                              : "select-input";
                           const redOutline =
                             errors["megaOption"] && touched["megaOption"]
                               ? "dd-cover-error"
@@ -309,7 +309,7 @@ class MegaForm extends Component {
                                   {...field}
                                   className={hasError}
                                   type={this.state.passwordToggle ? "password" : "input"}
-                                  autoComplete="new-password"
+                                  autoComplete="off"
                                 />
                                 <img
                                   src={this.state.passwordToggle ? IconEyeHide : IconEyeShow}
@@ -402,10 +402,10 @@ class MegaForm extends Component {
                           const { errors, touched } = props.form;
                           const hasError =
                             errors["state"] && touched["state"]
-                              ? "select--error"
-                              : "select--input";
+                              ? "select-error"
+                              : "select-input";
                           const redOutline =
-                            errors["megaOption"] && touched["megaOption"]
+                            errors["state"] && touched["state"]
                               ? "dd-cover-error"
                               : "dd-cover";
                           let defaultOption = (
@@ -757,19 +757,17 @@ const SelectStyle = styled.div`
     opacity: 0.7;
   }
 
-  .select--error {
+  .select-error {
     width: 100%;
     height: 55px;
-    // background-color: #2d0906;
     background-color: #1b1c1c !important;
-    border-color: red;
     font-size: 1.3em;
     border: 1px solid red;
     color: white;
     margin-top: 3px;
   }
 
-  .select--input {
+  .select-input {
     width: 100%;
     height: 55px;
     border: solid 1px #ffffff;
