@@ -7,6 +7,7 @@ import * as Yup from "yup";
 import IconEyeShow from "../static/images/eye-show.png";
 import IconEyeHide from "../static/images/eye-hide.png";
 import CheckBox from "./hiddenCheckbox";
+import Loader from "./Loader";
 
 const phoneValid = /^[^_]*$/;
 const zipCode = /^[0-9]{5}(?:-[0-9]{4})?$/;
@@ -57,6 +58,7 @@ const validation = Yup.object().shape({
 class MegaForm extends Component {
   state = {
     submitBool: false,
+    loading: false,
     errorBool: false,
     errorMessage: "",
     passwordToggle: true,
@@ -105,15 +107,19 @@ class MegaForm extends Component {
             delete values["terms"];
             // POST FUNCTION GOES HERE:::: this.postWarranty(values, event, resetForm, initialValues);
             resetForm(initialValues);
-            this.setState({ submitBool: true });
+            this.setState({ loading: true, });
             setTimeout(() => {
               this.setState({
-                submitBool: false,
+                submitBool: true,
                 errorBool: false,
                 radioValue: "",
                 isStateVisible: true,
                 isOptionVisible: true,
+                loading: false,
               });
+              setTimeout(() => {
+                this.setState({ submitBool: false, })
+              }, 1500);
               // ROUTE TO NEXT PAGE:::::: this.props.history.push("/registration/five"), THIS AND ABOVE PRY LIVES IN POST FUNCTION;
             }, 3000);
           }}
@@ -670,7 +676,7 @@ class MegaForm extends Component {
                                 />
                               </label>
                               <div className="cb-terms">
-                                &nbsp;Check the box to accept our&nbsp;
+                                &nbsp;Check box to accept our&nbsp;
                                 <a
                                   className="text-terms--purple"
                                   href="https://www.freeprivacypolicy.com/blog/privacy-policy-url/"
@@ -709,7 +715,7 @@ class MegaForm extends Component {
                         })
                       }}
                     >
-                      SUBMIT MEGA
+                      {this.state.loading ? <Loader size={"12px"} /> : "SUBMIT MEGA"}
                     </button>
                   </div>
                 </form>
@@ -754,7 +760,8 @@ const SelectStyle = styled.div`
   .select--error {
     width: 100%;
     height: 55px;
-    background-color: #2d0906;
+    // background-color: #2d0906;
+    background-color: #1b1c1c !important;
     border-color: red;
     font-size: 1.3em;
     border: 1px solid red;

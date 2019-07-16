@@ -27,7 +27,7 @@ const Icon = styled.svg`
   stroke-width: 3px;
 `;
 
-const HiddenCheckbox = styled.input.attrs({ type: 'checkbox' })`
+const HiddenCheckbox = styled.input.attrs({ type: "checkbox" })`
   border: 0;
   clip: rect(0 0 0 0);
   clippath: inset(50%);
@@ -44,12 +44,13 @@ const StyledCheckbox = styled.div`
   display: inline-block;
   width: 20px;
   height: 20px;
-  background: ${props => (props.checked ? '#d9d9d9' : 'white')};
+  background: ${props => (props.checked ? "#d9d9d9" : "white")};
   border-radius: 3px;
+  border: 1px solid #d9d9d9;
   transition: all 250ms;
   cursor: pointer;
 
   ${Icon} {
-    visibility: ${props => (props.checked ? 'visible' : 'hidden')};
+    visibility: ${props => (props.checked ? "visible" : "hidden")};
   }
 `;
